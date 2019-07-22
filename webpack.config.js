@@ -1,23 +1,26 @@
 const path = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
+const webpack = require('webpack')
+const UglifyJSPlugin = require('uglifyjs-webpack-plugin')
+const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 
 module.exports = {
+	devtool: "cheap-module-source-map",
 	entry: {
 		app: [
-			'react-hot-loader/patch',
 			path.join(__dirname, 'src/index.js')
 		],
 		vendor: ['react', 'react-router-dom', 'redux', 'react-dom', 'react-redux']
 	},
 	output: {
 		path: path.join(__dirname, './dist'),
-		filename: '[name].[hash].js',
-		chunkFilename: '[name].[chunkhash].js'
+		filename: '[name].[chunkhash].js',
+		publicPath: '/'
 	},
 	module: {
 		rules: [{
 			test: /\.js$/,
-			use: ['babel-loader?cacheDirectory=true'],
+			use: ['babel-loader'],
 			include: path.join(__dirname, 'src')
 		},{
 			test: /\.css$/,
@@ -34,14 +37,23 @@ module.exports = {
 		}),
 		new webpack.optimize.CommonsChunkPlugin({
 			name: 'vendor'
-		})
+		}),
+		new webpack.optimize.UglifyJsPlugin({
+			compress: {
+				warnings: false
+			}
+		}),
+		new webpack.DefinePlugin({
+			'process.env': {
+				'NODE_ENV': JSON.stringify('production')
+			}
+		}),
+		new webpack.HashedModuleIdsPlugin(),
+		new webpack.optimize.CommonsChunkPlugin({
+			name: 'runtime'
+		}),
+		new CleanWebpackPlugin()
 	],
-	devServer: {
-		port: 8080,
-		contentBase: path.join(__dirname, './dist'),
-		historyApiFallback: true,
-		host: '0.0.0.0'
-	},
 	resolve: {
 		alias: {
 			pages: path.join(__dirname, 'src/pages'),
