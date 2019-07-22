@@ -20,3 +20,22 @@ function getUserInfoFail() {
 		type: GET_USER_INFO_FAIL
 	}
 }
+
+export function getUserInfo() {
+	return function (dispatch) {
+		dispatch(getUserInfoRequest());
+
+		return fetch('http://localhost:8080/api/user.json')
+			.then((response => {
+				return response.json()
+			}))
+			.then((json) => {
+					dispatch(getUserInfoSuccess(json))
+				}
+			).catch(
+				() => {
+					dispatch(getUserInfoFail());
+				}
+			)
+	}
+}
