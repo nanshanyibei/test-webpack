@@ -32,9 +32,9 @@ module.exports = {
 			filename: 'index.html',
 			template: path.join(__dirname, 'src/index.html')
 		}),
-		new webpack.optimize.CommonsChunkPlugin({
-			name: 'vendor'
-		})
+		// new webpack.optimize.CommonsChunkPlugin({
+		// 	name: 'vendor'
+		// })
 	],
 	devServer: {
 		port: 8080,
